@@ -57,7 +57,8 @@ values."
      version-control
      ;; c-c++
      (c-c++ :variables
-            ;;c-c++-default-mode-for-headers 'c++-mode
+
+            c-c++-default-mode-for-headers 'c++-mode
             c-c++-enable-clang-support t
             c-c++-enable-clang-format-on-save t
             )
@@ -315,11 +316,15 @@ before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
   (fset 'evil-visual-update-x-selection 'ignore)
   (setq configuration-layer--elpa-archives
-    '(("melpa-cn" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
-      ("org-cn"   . "http://mirrors.tuna.tsinghua.edu.cn/elpa/org/")
-      ("gnu-cn"   . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")))
-
-)
+        '(("melpa-cn" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
+          ("org-cn"   . "http://mirrors.tuna.tsinghua.edu.cn/elpa/org/")
+          ("gnu-cn"   . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")))
+  (custom-set-variables '(spacemacs-theme-custom-colors
+                          '((comment . "#838783")
+                            (type . "#9c9c44")
+                            (func . "#d77d5f")
+                            )))
+ )
 
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
