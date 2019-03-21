@@ -31,15 +31,19 @@ values."
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
-     haskell
+     csv
+     ;; c-c++
+     (c-c++ :variables
+            c-c++-default-mode-for-headers 'c++-mode
+            c-c++-enable-clang-support t
+            c-c++-enable-clang-format-on-save t
+            )
+     javascript
+     lua
      yaml
-     python
-     python
-     ;; ----------------------------------------------------------------
-     ;; Example of useful layers you may want to use right away.
-     ;; Uncomment some layer names and press <SPC f e R> (Vim style) or
-     ;; <M-m f e R> (Emacs style) to install them.
-     ;; ----------------------------------------------------------------
+     (python :variables
+             python-test-runner 'pytest
+             python-enable-yapf-format-on-save t)
      helm
      (auto-completion :variables
                       auto-completion-return-key-behavior 'complete
@@ -50,22 +54,16 @@ values."
      emacs-lisp
      git
      markdown
-     ;; org
      ;; spell-checking
      (spell-checking :variables
                      spell-checking-enable-by-default t
                      spell-checking-enable-auto-dictionary t
                      enable-flyspell-auto-completion t
                      )
-
      version-control
-     ;; c-c++
-     (c-c++ :variables
-
-            c-c++-default-mode-for-headers 'c++-mode
-            c-c++-enable-clang-support t
-            c-c++-enable-clang-format-on-save t
-            )
+     (haskell :variables haskell-completion-backend 'ghc-core-mode
+              haskell-enable-hindent-style "johan-tibell"
+              )
      )
 
    ;; List of additional packages that will be installed without being
@@ -329,7 +327,6 @@ before packages are loaded. If you are unsure, you should try in setting them in
                             (func . "#d77d5f"))
                           )
                         )
-  (setq whole-line-or-region-global-mode t)
 )
 
 (defun dotspacemacs/user-config ()
@@ -340,16 +337,20 @@ This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
 
-  (delete-selection-mode t)
-  (global-auto-complete-mode)
-
   ;; Bind clang-format-region to C-M-tab in all modes:
   (defun clang-format-bindings ()
     (define-key c++-mode-map [tab] 'clang-format-buffer))
+
   (global-set-key [C-M-tab] 'clang-format-region)
   ;; Bind clang-format-buffer to tab on the c++-mode only:
   (add-hook 'c++-mode-hook 'clang-format-bindings)
-)
+  (add-hook 'c-mode-hook 'clang-format-bindings)
+
+  (delete-selection-mode t)
+  (global-auto-complete-mode t)
+  ;; (whole-line-or-region-global-mode t)
+  (add-hook 'python-mode-hook 'yapf-mode)
+  )
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
@@ -370,7 +371,7 @@ you should place your code here."
      ("melpa-tsinghua" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/"))))
  '(package-selected-packages
    (quote
-    (intero hlint-refactor hindent helm-hoogle haskell-snippets company-ghci company-ghc ghc haskell-mode company-cabal cmm-mode yaml-mode yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode dash-functional helm-pydoc cython-mode company-anaconda anaconda-mode pythonic whole-line-or-region flyspell-popup yasnippet-classic-snippets disaster company-c-headers cmake-mode clang-format xterm-color unfill smeargle shell-pop orgit mwim multi-term mmm-mode markdown-toc markdown-mode magit-gitflow helm-gitignore helm-company helm-c-yasnippet gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md fuzzy flyspell-correct-helm flyspell-correct flycheck-pos-tip pos-tip flycheck evil-magit magit-popup magit transient git-commit with-editor lv eshell-z eshell-prompt-extras esh-help diff-hl company-statistics company auto-yasnippet yasnippet auto-dictionary ac-ispell auto-complete spinner evil-visualstar evil-visual-mark-mode evil-tutor evil-surround evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state iedit evil-exchange evil-ediff evil-args evil-anzu anzu undo-tree adaptive-wrap evil powerline parent-mode projectile pkg-info epl helm helm-core flx highlight popup f dash s bind-key packed avy async paradox goto-chg ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline smartparens restart-emacs request rainbow-delimiters popwin persp-mode pcre2el org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hydra hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-unimpaired evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-escape eval-sexp-fu elisp-slime-nav dumb-jump diminish define-word column-enforce-mode clean-aindent-mode bind-map auto-highlight-symbol auto-compile aggressive-indent ace-window ace-link ace-jump-helm-line)))
+    (csv-mode orgit web-beautify livid-mode skewer-mode simple-httpd json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc company-tern tern coffee-mode lua-mode intero hlint-refactor hindent helm-hoogle haskell-snippets company-ghci company-ghc ghc haskell-mode company-cabal cmm-mode yaml-mode yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode dash-functional helm-pydoc cython-mode company-anaconda anaconda-mode pythonic whole-line-or-region flyspell-popup yasnippet-classic-snippets disaster company-c-headers cmake-mode clang-format xterm-color unfill smeargle shell-pop mwim multi-term mmm-mode markdown-toc markdown-mode magit-gitflow helm-gitignore helm-company helm-c-yasnippet gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md fuzzy flyspell-correct-helm flyspell-correct flycheck-pos-tip pos-tip flycheck evil-magit magit-popup magit transient git-commit with-editor lv eshell-z eshell-prompt-extras esh-help diff-hl company-statistics company auto-yasnippet yasnippet auto-dictionary ac-ispell auto-complete spinner evil-visualstar evil-visual-mark-mode evil-tutor evil-surround evil-mc evil-matchit evil-lisp-state evil-indent-plus evil-iedit-state iedit evil-exchange evil-ediff evil-args evil-anzu anzu undo-tree adaptive-wrap evil powerline parent-mode projectile pkg-info epl helm helm-core flx highlight popup f dash s bind-key packed avy async paradox goto-chg ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline smartparens restart-emacs request rainbow-delimiters popwin persp-mode pcre2el org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hydra hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-themes helm-swoop helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-unimpaired evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-escape eval-sexp-fu elisp-slime-nav dumb-jump diminish define-word column-enforce-mode clean-aindent-mode bind-map auto-highlight-symbol auto-compile aggressive-indent ace-window ace-link ace-jump-helm-line)))
  '(spacemacs-theme-custom-colors
    (quote
     ((comment . "#838783")
